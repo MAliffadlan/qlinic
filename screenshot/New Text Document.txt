@@ -1,0 +1,37 @@
+🚀 Excited to share my latest project: Qlinic – Clinic Queue Management System 🏥
+
+
+
+One of the common problems in clinics is inefficient queue management, often leading to long waiting times and poor patient experience.
+
+To address this, I built Qlinic, a web-based system designed to make queue management more organized and efficient.
+
+
+
+💡 Key Features:
+
+-Real-time queue tracking with clear visual feedback
+
+-Smart waiting time estimation
+
+-Role-based dashboards (Admin & Patient)
+
+-Simple and user-friendly interface
+
+
+
+🛠 Tech Stack:
+
+-Laravel (Backend)
+
+-Blade & modern UI styling
+
+
+
+This project helped me improve not only my backend logic but also how I design systems based on real user needs.
+
+
+
+Still open for improvements, and I’d love to hear your feedback! 👇
+
+#webdevelopment #laravel #backenddeveloper #portfolio #softwareengineering
