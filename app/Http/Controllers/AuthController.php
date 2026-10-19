@@ -31,7 +31,7 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'email' => 'Email atau password tidak cocok.',
         ])->onlyInput('email');
     }
 
@@ -42,9 +42,14 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+        // Honeypot anti-bot: kalau field 'company' terisi, pasti bot
+        if (!empty($request->input('company'))) {
+            abort(403, 'Bot detected');
+        }
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'nik' => ['required', 'string', 'unique:users'],
+            'nik' => ['required', 'string', 'digits:16', 'unique:users'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
@@ -58,6 +63,10 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
+
+        // Tandai NIK & IP sebagai baru saja berhasil daftar (cooldown anti-spam)
+        \Illuminate\Support\Facades\Cache::put('reg_rate_nik_' . $user->nik, true, now()->addDay());
+        \Illuminate\Support\Facades\Cache::put('reg_success_ip_' . $request->ip(), now()->timestamp, now()->addHour());
 
         return redirect('/patient/dashboard');
     }

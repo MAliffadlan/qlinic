@@ -3,341 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Admin Dashboard - Qlinic')</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #059669; /* Soft Green */
-            --primary-hover: #047857;
-            --bg-color: #F8FAFC;
-            --sidebar-bg: #FFFFFF;
-            --text-main: #0F172A;
-            --text-muted: #64748B;
-            --border-color: #E2E8F0;
-            --danger: #EF4444;
-            --success: #10B981;
-            --warning: #F59E0B;
-            --white: #FFFFFF;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --radius-md: 12px;
-            --radius-lg: 16px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* Sidebar Styles */
-        .sidebar {
-            width: 260px;
-            background-color: var(--sidebar-bg);
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        .sidebar-brand {
-            padding: 24px;
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-        }
-
-        .sidebar-brand span {
-            width: 32px;
-            height: 32px;
-            background: var(--primary);
-            color: var(--white);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        .sidebar-nav {
-            flex-grow: 1;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .nav-item {
-            padding: 12px 16px;
-            border-radius: 8px;
-            color: var(--text-muted);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .nav-item:hover {
-            background-color: #F1F5F9;
-            color: var(--primary);
-        }
-
-        .nav-item.active {
-            background-color: var(--primary);
-            color: var(--white);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .sidebar-footer {
-            padding: 16px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .avatar {
-            width: 40px;
-            height: 40px;
-            background: #E2E8F0;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .user-info .name {
-            font-weight: 600;
-            font-size: 14px;
-        }
-        
-        .user-info .role {
-            font-size: 12px;
-            color: var(--text-muted);
-            text-transform: capitalize;
-        }
-
-        /* Main Content Styles */
-        .main-wrapper {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .topbar {
-            height: 72px;
-            background-color: var(--white);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 32px;
-        }
-
-        .topbar-title {
-            font-size: 20px;
-            font-weight: 600;
-        }
-
-        .content-area {
-            flex-grow: 1;
-            padding: 32px;
-            overflow-y: auto;
-        }
-
-        /* Utilities */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-weight: 600;
-            padding: 10px 20px;
-            border-radius: 8px;
-            transition: all 0.2s;
-            cursor: pointer;
-            border: none;
-            font-size: 14px;
-            text-decoration: none;
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            color: var(--white);
-            box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.2);
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 8px -1px rgba(5, 150, 105, 0.3);
-        }
-
-        .btn-danger { background-color: #FEF2F2; color: var(--danger); border: 1px solid #FCA5A5;}
-        .btn-danger:hover { background-color: var(--danger); color: white; }
-
-        .btn-success { background-color: #ECFDF5; color: var(--success); border: 1px solid #6EE7B7; }
-        .btn-success:hover { background-color: var(--success); color: white; }
-
-        .btn-outline {
-            border: 1px solid var(--border-color);
-            background: var(--white);
-            color: var(--text-main);
-        }
-
-        .btn-outline:hover {
-            background: #F8FAFC;
-        }
-
-        .card {
-            background: var(--white);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-color);
-            padding: 24px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .card:hover {
-            box-shadow: var(--shadow-md);
-        }
-
-        .badge {
-            padding: 4px 12px;
-            border-radius: 9999px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .badge-warning { background: #FEF3C7; color: #B45309; }
-        .badge-success { background: #D1FAE5; color: #047857; }
-        .badge-info { background: #DBEAFE; color: #1D4ED8; }
-        .badge-danger { background: #FEE2E2; color: #B91C1C; }
-
-        .grid { display: grid; gap: 24px; }
-        .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
-        .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
-
-        .form-logout { width: 100%; }
-        .btn-logout { 
-            width: 100%; 
-            padding: 10px; 
-            border-radius: 8px; 
-            background: #F1F5F9; 
-            color: var(--text-main);
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        .btn-logout:hover { background: #E2E8F0; color: var(--danger); }
-
-        .d-flex { display: flex; }
-        .justify-between { justify-content: space-between; }
-        .items-center { align-items: center; }
-        .mb-4 { margin-bottom: 24px; }
-        .mb-2 { margin-bottom: 8px; }
-        .mt-4 { margin-top: 24px; }
-        .text-center { text-align: center; }
-        
-        /* Table Styles */
-        .table-responsive { overflow-x: auto; }
-        .table { width: 100%; border-collapse: separate; border-spacing: 0; }
-        .table th { background: #F8FAFC; text-align: left; padding: 16px; font-weight: 600; color: var(--text-muted); font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border-color); border-top: 1px solid var(--border-color); }
-        .table td { padding: 16px; border-bottom: 1px solid var(--border-color); font-size: 14px; }
-        .table tr:first-child th:first-child { border-top-left-radius: 8px; border-left: 1px solid var(--border-color); }
-        .table tr:first-child th:last-child { border-top-right-radius: 8px; border-right: 1px solid var(--border-color); }
-        .table tr td:first-child { border-left: 1px solid var(--border-color); }
-        .table tr td:last-child { border-right: 1px solid var(--border-color); }
-        .table tr:last-child td:first-child { border-bottom-left-radius: 8px; }
-        .table tr:last-child td:last-child { border-bottom-right-radius: 8px; }
-        .table tbody tr:hover td { background-color: #F8FAFC; }
-
-        /* Alert */
-        .alert { padding: 16px; border-radius: 8px; margin-bottom: 24px; font-weight: 500; display: flex; align-items: center; gap: 12px;}
-        .alert-success { background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; }
-        .alert-error { background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; }
-    </style>
+    <meta name="theme-color" content="#07271d">
+    <title>@yield('title', 'Admin — Qlinic')</title>
+    <meta name="description" content="Ruang kerja petugas klinik Qlinic.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/qlinic.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
     @yield('styles')
 </head>
-<body>
-    <aside class="sidebar">
-        <a href="/" class="sidebar-brand">
-            <img src="{{ asset('logo.png') }}" alt="Logo" style="height: 32px; width: auto; object-fit: contain;"> Qlinic
-        </a>
-        
-        <nav class="sidebar-nav">
-            <a href="{{ route('admin.dashboard') }}" class="nav-item active">
-                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+<body class="admin-body">
+    <a class="skip-link" href="#konten">Lewati ke konten</a>
+
+    <aside class="admin-sidebar" aria-label="Navigasi admin">
+        <div class="admin-sidebar__brand">
+            <a class="brand brand--light" href="{{ route('admin.dashboard') }}">
+                <span class="brand-mark"><img src="{{ asset('logo.png') }}" alt="Logo Qlinic"></span>
+                Qlinic
+            </a>
+            <button class="admin-sidebar__close" type="button" data-sidebar-toggle aria-label="Tutup menu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+
+        <p class="admin-sidebar__label">Ruang kerja</p>
+        <nav class="admin-nav">
+            <a class="admin-nav__link {{ request()->routeIs('admin.dashboard') ? 'is-active' : '' }}" href="{{ route('admin.dashboard') }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9h13v-9"/><path d="M9.5 19v-5h5v5"/></svg>
                 Dashboard
             </a>
-            <a href="{{ route('queue.display') }}" target="_blank" class="nav-item">
-                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                Buka Layar TV
+            <a class="admin-nav__link" href="{{ route('queue.display') }}" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                Layar TV
+                <svg style="margin-left:auto; width:14px; height:14px; opacity:.5;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
             </a>
         </nav>
 
-        <div class="sidebar-footer">
-            <div class="user-profile">
-                <div class="avatar">
-                    {{ substr(Auth::user()->name, 0, 1) }}
-                </div>
-                <div class="user-info">
-                    <div class="name">{{ Auth::user()->name }}</div>
-                    <div class="role">{{ Auth::user()->role }}</div>
-                </div>
+        <div class="admin-sidebar__spacer"></div>
+
+        <div class="admin-sidebar__note">
+            <strong>Layar antrean publik</strong>
+            <p>Buka layar TV di perangkat terpisah agar pasien dapat melihat panggilan secara langsung.</p>
+        </div>
+
+        <div class="admin-user">
+            <span class="avatar" aria-hidden="true">{{ mb_substr(Auth::user()->name, 0, 1) }}</span>
+            <div class="admin-user__meta">
+                <div class="admin-user__name">{{ Auth::user()->name }}</div>
+                <div class="admin-user__role">Petugas</div>
             </div>
-            <form action="{{ route('logout') }}" method="POST" class="form-logout">
+            <form action="{{ route('logout') }}" method="POST">
                 @csrf
-                <button type="submit" class="btn-logout">Logout</button>
+                <button class="admin-logout" type="submit" aria-label="Keluar dari akun" title="Keluar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 17l5-5-5-5"/><path d="M20 12H9"/><path d="M12 19H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6"/></svg>
+                </button>
             </form>
         </div>
     </aside>
 
-    <div class="main-wrapper">
-        <header class="topbar">
-            <div class="topbar-title">@yield('title_header', 'Manajemen Antrian')</div>
-            <div style="color: var(--text-muted); font-size: 14px;">
-                {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}
+    <div class="admin-backdrop" data-sidebar-toggle aria-hidden="true"></div>
+
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <button class="admin-menu-btn" type="button" data-sidebar-toggle aria-label="Buka menu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+            </button>
+
+            <div class="admin-topbar__title">
+                <strong>@yield('title_header', 'Manajemen Antrean')</strong>
+                <span>Pantau dan kendalikan panggilan poli hari ini.</span>
+            </div>
+
+            <div class="admin-topbar__actions">
+                <span class="admin-topbar__date">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+                    {{ \Carbon\Carbon::now('Asia/Jakarta')->locale('id')->translatedFormat('l, d F Y') }}
+                </span>
+                <a class="btn btn-outline btn-sm" href="{{ route('queue.display') }}" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                    <span>Buka layar TV</span>
+                </a>
             </div>
         </header>
 
-        <main class="content-area">
+        <main class="admin-content" id="konten">
             @if(session('success'))
-                <div class="alert alert-success">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    {{ session('success') }}
+                <div class="alert alert-success" role="status">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                    <span>{{ session('success') }}</span>
                 </div>
             @endif
             @if(session('error'))
-                <div class="alert alert-error">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    {{ session('error') }}
+                <div class="alert alert-error" role="alert">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+                    <span>{{ session('error') }}</span>
                 </div>
             @endif
 
@@ -345,7 +105,7 @@
         </main>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="{{ asset('js/qlinic.js') }}" defer></script>
     @yield('scripts')
 </body>
 </html>

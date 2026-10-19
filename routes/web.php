@@ -12,8 +12,8 @@ Route::get('/', function () {
         }
         return redirect()->route('patient.dashboard');
     }
-    return redirect()->route('login');
-});
+    return view('landing');
+})->name('landing');
 
 Route::get('/home', function () {
     return redirect('/');
@@ -21,9 +21,9 @@ Route::get('/home', function () {
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/register', [AuthController::class, 'register'])->middleware('throttle.registration');
 });
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 

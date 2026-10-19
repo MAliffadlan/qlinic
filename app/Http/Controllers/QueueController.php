@@ -137,12 +137,16 @@ class QueueController extends Controller
         $today = date('Y-m-d');
         
         // Get currently calling queue for each service
-        $status = Service::with(['queues' => function($q) use ($today) {
-            $q->where('date', $today)
-              ->where('status', 'calling')
-              ->with('user');
-        }])->get();
-        
+        $status = Service::query()
+            ->select(['id', 'name', 'code'])
+            ->with(['queues' => function ($q) use ($today) {
+                $q->select(['id', 'service_id', 'user_id', 'queue_number', 'status', 'date'])
+                    ->where('date', $today)
+                    ->where('status', 'calling')
+                    ->with('user:id,name');
+            }])
+            ->get();
+
         return response()->json($status);
     }
 }

@@ -1,52 +1,76 @@
-@extends('layouts.app')
+@extends('layouts.auth')
 
-@section('title', 'Login - Qlinic')
+@section('title', 'Masuk — Qlinic')
+@section('description', 'Masuk ke akun Qlinic untuk mengambil nomor antrean klinik dan memantau panggilan.')
 
 @section('content')
-<div class="auth-container">
-    <div class="card" style="padding: 40px; border-top: 6px solid var(--primary); box-shadow: var(--shadow-lg);">
-        
-        <div class="text-center mb-4">
-            <h2 style="font-size: 28px; font-weight: 800; color: var(--primary); margin-bottom: 8px;">Selamat Datang</h2>
-            <p style="color: var(--text-muted); font-size: 15px;">Masuk untuk mengambil nomor antrean</p>
-        </div>
-        
-        <form action="{{ route('login') }}" method="POST">
-            @csrf
-            <div class="form-group">
-                <label for="email" class="form-label">Email Address</label>
-                <input type="email" id="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="masukkan email anda" required autofocus>
-            </div>
-
-            <div class="form-group" style="margin-bottom: 32px;">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-block" style="padding: 14px; font-size: 16px;">Masuk Aplikasi</button>
-        </form>
-
-        <div style="margin-top: 24px; background: #F8FAFC; padding: 20px; border-radius: 12px; border: 1px solid var(--border-color);">
-            <p style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Akses Akun Demo</p>
-            
-            <div style="display: flex; flex-direction: column; gap: 12px;">
-                <div>
-                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 2px;">Sebagai Admin:</p>
-                    <p style="font-size: 14px; font-weight: 600; color: var(--text-main);">admin@qlinic.com / <span style="font-weight: 400;">password</span></p>
-                </div>
-                <div>
-                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 2px;">Sebagai Pasien:</p>
-                    <p style="font-size: 14px; font-weight: 600; color: var(--text-main);">patient01@qlinic.com / <span style="font-weight: 400;">password</span></p>
-                </div>
-            </div>
-        </div>
-
-        <div style="margin-top: 32px; text-align: center; border-top: 1px solid var(--border-color); padding-top: 24px;">
-            <p style="color: var(--text-muted); font-size: 15px;">
-                Pasien Kunjungan Baru? <br>
-                <a href="{{ route('register') }}" style="color: var(--primary); text-decoration: none; font-weight: 700; display: inline-block; margin-top: 8px;">Daftar Akun Sekarang &rarr;</a>
-            </p>
-        </div>
+    <div class="auth-card__head">
+        <span class="eyebrow">Akun pasien</span>
+        <h1 id="auth-title">Selamat datang kembali.</h1>
+        <p>Masuk untuk mengambil nomor dan memantau antrean hari ini.</p>
     </div>
-</div>
+
+    <form class="auth-form" action="{{ route('login') }}" method="POST">
+        @csrf
+
+        <div class="field">
+            <label class="label" for="email">Alamat email</label>
+            <input
+                class="input"
+                type="email"
+                id="email"
+                name="email"
+                value="{{ old('email') }}"
+                placeholder="nama@email.com"
+                autocomplete="email"
+                required
+                autofocus
+                @error('email') aria-invalid="true" @enderror
+            >
+            @error('email')
+                <span class="field-error">{{ $message }}</span>
+            @enderror
+        </div>
+
+        <div class="field">
+            <label class="label" for="password">Password</label>
+            <div class="input-with-action">
+                <input
+                    class="input"
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Masukkan password"
+                    autocomplete="current-password"
+                    required
+                >
+                <button class="input-action" type="button" data-password-toggle="password" aria-label="Tampilkan password" aria-pressed="false">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <button class="btn btn-primary btn-block btn-lg" type="submit">
+            Masuk ke Qlinic
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+    </form>
+
+    <div class="auth-switch">
+        Belum punya akun? <a href="{{ route('register') }}">Daftar sebagai pasien</a>
+    </div>
+
+    @if(app()->environment('local'))
+        <div class="demo-box" aria-label="Akun demo untuk lingkungan lokal">
+            <div class="demo-box__label">Akun demo · hanya lokal</div>
+            <div class="demo-box__row">
+                <span>Admin</span>
+                <code>admin@klinik.com / password</code>
+            </div>
+            <div class="demo-box__row">
+                <span>Pasien</span>
+                <code>patient01@qlinic.com / password</code>
+            </div>
+        </div>
+    @endif
 @endsection
