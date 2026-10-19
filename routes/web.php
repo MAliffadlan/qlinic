@@ -1,17 +1,19 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\QueueController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    if (\Illuminate\Support\Facades\Auth::check()) {
-        if (\Illuminate\Support\Facades\Auth::user()->role === 'admin') {
+    if (Auth::check()) {
+        if (Auth::user()->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }
+
         return redirect()->route('patient.dashboard');
     }
+
     return view('landing');
 })->name('landing');
 
@@ -27,13 +29,13 @@ Route::middleware('guest')->group(function () {
 });
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::middleware(['auth'])->prefix('admin')->group(function() {
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [QueueController::class, 'adminDashboard'])->name('admin.dashboard');
     Route::post('/queue/next', [QueueController::class, 'callNext'])->name('admin.queue.next');
     Route::post('/queue/update/{id}', [QueueController::class, 'updateQueueStatus'])->name('admin.queue.update');
 });
 
-Route::middleware(['auth'])->prefix('patient')->group(function() {
+Route::middleware(['auth'])->prefix('patient')->group(function () {
     Route::get('/dashboard', [QueueController::class, 'patientDashboard'])->name('patient.dashboard');
     Route::post('/queue/take', [QueueController::class, 'takeQueue'])->name('patient.queue.take');
 });
