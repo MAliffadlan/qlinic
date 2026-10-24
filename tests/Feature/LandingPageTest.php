@@ -53,6 +53,36 @@ class LandingPageTest extends TestCase
         );
     }
 
+    public function test_landing_uses_existing_public_assets(): void
+    {
+        $response = $this->get('/');
+        $response->assertOk();
+        $response->assertSee('src="'.asset('logo.png').'"', false);
+        $response->assertSee('href="'.asset('logo.png').'"', false);
+        $response->assertDontSee(asset('img/logo.png'), false);
+    }
+
+    public function test_landing_motion_is_progressive_and_reduced_motion_safe(): void
+    {
+        $css = file_get_contents(public_path('css/landing.css'));
+        $javascript = file_get_contents(public_path('js/landing.js'));
+
+        $this->assertMatchesRegularExpression(
+            '/\.landing-body\s+\.reveal\s*\{[^}]*opacity\s*:\s*1/s',
+            $css
+        );
+        $this->assertStringNotContainsString('color: var(--muted);', $css);
+        $this->assertStringContainsString('@media (prefers-reduced-motion: reduce)', $css);
+        $this->assertStringContainsString('scroll-behavior: auto', $css);
+        $this->assertStringContainsString('.landing-motion', $css);
+        $this->assertStringNotContainsString('.js .reveal', $css);
+        $this->assertStringContainsString('window.matchMedia', $javascript);
+        $this->assertStringContainsString('IntersectionObserver', $javascript);
+        $this->assertStringContainsString('classList.add("landing-motion")', $javascript);
+        $this->assertStringContainsString('observer.unobserve', $javascript);
+        $this->assertStringNotContainsString('addEventListener("scroll"', $javascript);
+    }
+
     private function stepCount(string $html): int
     {
         $document = new DOMDocument;

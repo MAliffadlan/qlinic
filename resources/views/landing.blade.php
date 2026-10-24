@@ -7,7 +7,7 @@
     <meta name="description" content="Qlinic membantu kamu mengambil nomor antrean klinik dari rumah dan memantau giliran secara real-time. Gratis, tanpa install aplikasi.">
     <title>Qlinic — Antre dari rumah, datang tepat waktu</title>
     <link rel="canonical" href="{{ route('landing') }}">
-    <link rel="icon" type="image/png" href="{{ asset('img/logo.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@
     <header class="landing-header">
         <div class="container landing-nav">
             <a href="{{ route('landing') }}" class="brand" aria-label="Qlinic, kembali ke beranda">
-                <img src="{{ asset('img/logo.png') }}" alt="" class="brand__logo" width="46" height="46">
+                <img src="{{ asset('logo.png') }}" alt="" class="brand__logo" width="46" height="46">
                 <span>Qlinic<span class="brand__dot">.</span></span>
             </a>
 
