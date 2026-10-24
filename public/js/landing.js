@@ -1,6 +1,22 @@
 (function () {
     "use strict";
 
+    var header = document.querySelector(".landing-header");
+    var headerFrame = null;
+
+    function updateHeader() {
+        headerFrame = null;
+        if (header) header.classList.toggle("is-scrolled", window.scrollY > 24);
+    }
+
+    function scheduleHeaderUpdate() {
+        if (headerFrame !== null) return;
+        headerFrame = window.requestAnimationFrame(updateHeader);
+    }
+
+    updateHeader();
+    window.addEventListener("scroll", scheduleHeaderUpdate, { passive: true });
+
     var motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (motionPreference.matches || !("IntersectionObserver" in window)) return;
 

@@ -38,6 +38,64 @@ class LandingPageTest extends TestCase
         }
     }
 
+    public function test_editorial_landing_has_a_distinct_hero_and_physical_ticket(): void
+    {
+        $response = $this->get('/');
+        $response->assertOk();
+
+        $content = $response->getContent();
+        $this->assertSame(1, $this->elementCount($content, '//section[contains(concat(" ", normalize-space(@class), " "), " hero ")]//div[contains(concat(" ", normalize-space(@class), " "), " hero__stage ")]'));
+        $this->assertSame(1, $this->elementCount($content, '//figure[contains(concat(" ", normalize-space(@class), " "), " ticket-demo ")]//div[contains(concat(" ", normalize-space(@class), " "), " ticket-demo__perforation ")]'));
+        $this->assertSame(1, $this->elementCount($content, '//section[@id="cara-kerja" and contains(concat(" ", normalize-space(@class), " "), " journey ")]'));
+        $response->assertSee('Ilustrasi antrean', false);
+        $this->assertSame(3, $this->elementCount($content, '//article[contains(concat(" ", normalize-space(@class), " "), " step-row ")]/div'));
+        $response->assertDontSee('service-links', false);
+    }
+
+    public function test_closing_has_one_action_instead_of_a_duplicate_login(): void
+    {
+        $response = $this->get('/');
+        $response->assertOk();
+
+        $content = $response->getContent();
+        $closing = '//section[contains(concat(" ", normalize-space(@class), " "), " closing ")]';
+        $this->assertSame(1, $this->elementCount($content, $closing.'//a'));
+        $this->assertSame(1, $this->elementCount($content, $closing.'//a[@href="'.route('register').'"]'));
+        $this->assertSame(0, $this->elementCount($content, $closing.'//a[@href="'.route('login').'"]'));
+        $this->assertSame(1, $this->elementCount($content, $closing.'//*[contains(concat(" ", normalize-space(@class), " "), " queue-buddy ")][@role="img"]'));
+        $this->assertSame(0, $this->elementCount($content, $closing.'//p[contains(concat(" ", normalize-space(@class), " "), " closing__flow ")]'));
+        $this->assertSame(1, $this->elementCount($content, '//header//a[@href="'.route('login').'"]'));
+    }
+
+    public function test_footer_does_not_repeat_the_queue_display_link(): void
+    {
+        $response = $this->get('/');
+        $response->assertOk();
+
+        $content = $response->getContent();
+        $this->assertSame(0, $this->elementCount($content, '//footer//a[@href="'.route('queue.display').'"]'));
+        $this->assertSame(0, $this->elementCount($content, '//footer//*[contains(concat(" ", normalize-space(@class), " "), " landing-footer__brand ")]'));
+        $this->assertSame(1, $this->elementCount($content, '//section[contains(concat(" ", normalize-space(@class), " "), " hero ")]//a[@href="'.route('queue.display').'"]'));
+    }
+
+    public function test_header_omits_the_tagline_and_footer_has_centered_copyright(): void
+    {
+        $response = $this->get('/');
+        $response->assertOk();
+
+        $content = $response->getContent();
+        $response->assertDontSeeText('Ruang tunggu, versi baru.');
+        $response->assertDontSeeText('Antre lebih nyaman, tanpa aplikasi tambahan.');
+        $response->assertSeeText('© 2026 Qlinic. All rights reserved.');
+        $this->assertSame(0, $this->elementCount($content, '//header//*[contains(concat(" ", normalize-space(@class), " "), " landing-nav__note ")]'));
+        $this->assertSame(0, $this->elementCount($content, '//footer//*[contains(concat(" ", normalize-space(@class), " "), " landing-footer__brand ")]'));
+        $this->assertSame(1, $this->elementCount($content, '//footer//p[normalize-space()="© 2026 Qlinic. All rights reserved."]'));
+
+        $css = file_get_contents(public_path('css/landing.css'));
+        $this->assertMatchesRegularExpression('/\.landing-footer__inner\s*\{[^}]*justify-content\s*:\s*center/s', $css);
+        $this->assertMatchesRegularExpression('/\.landing-footer p\s*\{[^}]*text-align\s*:\s*center/s', $css);
+    }
+
     public function test_landing_is_usable_without_javascript(): void
     {
         $response = $this->get('/');
@@ -76,11 +134,24 @@ class LandingPageTest extends TestCase
         $this->assertStringContainsString('scroll-behavior: auto', $css);
         $this->assertStringContainsString('.landing-motion', $css);
         $this->assertStringNotContainsString('.js .reveal', $css);
-        $this->assertStringContainsString('window.matchMedia', $javascript);
+        $this->assertStringContainsString('landing-header.is-scrolled', $css);
+        $this->assertStringContainsString('border-radius: 999px', $css);
+        $this->assertStringContainsString('updateHeader', $javascript);
+        $this->assertStringContainsString('window.scrollY', $javascript);
+        $this->assertStringContainsString('requestAnimationFrame', $javascript);
         $this->assertStringContainsString('IntersectionObserver', $javascript);
         $this->assertStringContainsString('classList.add("landing-motion")', $javascript);
         $this->assertStringContainsString('observer.unobserve', $javascript);
-        $this->assertStringNotContainsString('addEventListener("scroll"', $javascript);
+        $this->assertStringContainsString('addEventListener("scroll", scheduleHeaderUpdate, { passive: true })', $javascript);
+        $this->assertStringContainsString('if (headerFrame !== null) return;', $javascript);
+    }
+
+    private function elementCount(string $html, string $query): int
+    {
+        $document = new DOMDocument;
+        @$document->loadHTML($html, LIBXML_NOERROR);
+
+        return (new DOMXPath($document))->query($query)->length;
     }
 
     private function stepCount(string $html): int
