@@ -93,6 +93,7 @@ class AdminQueueAuthorizationTest extends TestCase
         ]);
 
         $response->assertRedirect();
+        $response->assertSessionHas('success', 'Antrean selanjutnya dipanggil');
         $this->assertSame('calling', $queue->fresh()->status);
     }
 
@@ -108,6 +109,7 @@ class AdminQueueAuthorizationTest extends TestCase
         ]);
 
         $response->assertRedirect();
+        $response->assertSessionHas('success', 'Status antrean diperbarui');
         $this->assertSame('completed', $queue->fresh()->status);
     }
 }
