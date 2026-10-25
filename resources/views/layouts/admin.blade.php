@@ -42,9 +42,13 @@
                 <span class="admin-nav__index" aria-hidden="true">01</span>
                 <span>Dashboard</span>
             </a>
-            <a class="admin-nav__link" href="{{ route('queue.display') }}" target="_blank" rel="noopener" aria-label="Layar TV, buka di tab baru">
+            <a class="admin-nav__link {{ request()->routeIs('admin.display') ? 'is-active' : '' }}" href="{{ route('admin.display') }}" @if(request()->routeIs('admin.display')) aria-current="page" @endif>
                 <span class="admin-nav__index" aria-hidden="true">02</span>
                 <span>Layar TV</span>
+            </a>
+            <a class="admin-nav__link" href="{{ route('queue.display') }}" target="_blank" rel="noopener" aria-label="Layar TV Publik, buka di tab baru">
+                <span class="admin-nav__index" aria-hidden="true">03</span>
+                <span>Layar TV Publik</span>
             </a>
         </nav>
 
@@ -72,7 +76,7 @@
 
             <div class="admin-topbar__title">
                 <strong>@yield('title_header', 'Manajemen Antrean')</strong>
-                <span>Pantau dan kendalikan panggilan poli hari ini.</span>
+                <span>@yield('subtitle_header', 'Pantau dan kendalikan panggilan poli hari ini.')</span>
             </div>
 
             <div class="admin-topbar__actions">
