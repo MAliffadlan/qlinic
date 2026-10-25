@@ -80,7 +80,7 @@
         </section>
 
         <section id="cara-kerja" class="journey container" aria-labelledby="steps-title">
-            <div class="journey__heading reveal">
+            <div class="journey__heading">
                 <div>
                     <p class="eyebrow"><span class="eyebrow__line"></span> Cara kerja</p>
                     <h2 id="steps-title" class="section-title">Tiga langkah, lalu<br>lanjutkan harimu.</h2>
@@ -88,21 +88,21 @@
             </div>
 
             <div class="steps-list">
-                <article class="step-row reveal">
+                <article class="step-row">
                     <span class="step-row__number" aria-hidden="true">01</span>
                     <div>
                         <h3>Daftar</h3>
                         <p>Buat akun dalam beberapa saat, langsung dari browser.</p>
                     </div>
                 </article>
-                <article class="step-row reveal">
+                <article class="step-row">
                     <span class="step-row__number" aria-hidden="true">02</span>
                     <div>
                         <h3>Pilih poli</h3>
                         <p>Pilih layanan yang kamu butuhkan dan ambil nomornya.</p>
                     </div>
                 </article>
-                <article class="step-row reveal">
+                <article class="step-row">
                     <span class="step-row__number" aria-hidden="true">03</span>
                     <div>
                         <h3>Pantau giliran</h3>

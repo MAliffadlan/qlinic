@@ -53,6 +53,17 @@ class LandingPageTest extends TestCase
         $this->assertSame(1, $this->elementCount($content, '//section[@id="cara-kerja"]//h3[normalize-space()="Pilih poli"]'));
     }
 
+    public function test_journey_is_immediately_visible_without_reveal_animation(): void
+    {
+        $response = $this->get('/');
+        $response->assertOk();
+
+        $content = $response->getContent();
+        $this->assertSame(0, $this->elementCount($content, '//section[@id="cara-kerja" and contains(concat(" ", normalize-space(@class), " "), " reveal ")]'));
+        $this->assertSame(0, $this->elementCount($content, '//section[@id="cara-kerja"]//*[contains(concat(" ", normalize-space(@class), " "), " reveal ")]'));
+        $this->assertSame(3, $this->elementCount($content, '//section[@id="cara-kerja"]//article[contains(concat(" ", normalize-space(@class), " "), " step-row ")]'));
+    }
+
     public function test_editorial_landing_has_a_distinct_hero_and_physical_ticket(): void
     {
         $response = $this->get('/');

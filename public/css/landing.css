@@ -134,14 +134,36 @@
 }
 
 .landing-nav__login {
+    position: relative;
     padding: 0 14px;
+    transition: color 180ms ease, transform 180ms var(--ease);
+}
+
+.landing-nav__login::after {
+    content: "";
+    position: absolute;
+    right: 14px;
+    bottom: 6px;
+    left: 14px;
+    height: 1px;
+    background: var(--landing-lime);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 180ms var(--ease);
+    pointer-events: none;
 }
 
 .landing-nav__login:hover {
     color: var(--landing-lime);
 }
 
+.landing-nav__login:active {
+    transform: translateY(0);
+}
+
 .landing-nav .landing-nav__register {
+    position: relative;
+    overflow: hidden;
     gap: 24px;
     min-height: 44px;
     padding: 0 17px 0 20px;
@@ -149,14 +171,72 @@
     border-radius: 999px;
     background: var(--landing-cream);
     color: var(--landing-ink);
-    transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+    transition: background-color 180ms ease, color 180ms ease, transform 180ms var(--ease), box-shadow 180ms ease;
 }
 
-.landing-nav .landing-nav__register:hover {
-    background: var(--landing-lime);
-    border-color: var(--landing-lime);
-    color: var(--landing-ink);
-    transform: translateY(-1px);
+.landing-nav .landing-nav__register > span {
+    display: inline-block;
+    transition: transform 180ms var(--ease);
+}
+
+.landing-nav .landing-nav__register::after {
+    content: "";
+    position: absolute;
+    inset: -24px;
+    border-radius: inherit;
+    background: radial-gradient(circle at var(--landing-press-x, 50%) var(--landing-press-y, 50%), rgba(11, 61, 45, 0.18), transparent 65%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.landing-nav .landing-nav__register:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.landing-nav .landing-nav__register:active::after {
+    animation: landing-register-press 180ms ease-out;
+}
+
+@keyframes landing-register-press {
+    from { opacity: 0.65; transform: scale(0.55); }
+    to { opacity: 0; transform: scale(1); }
+}
+
+@media (hover: hover) {
+    .landing-nav__login:hover {
+        transform: translateY(-1px);
+    }
+
+    .landing-nav__login:hover::after {
+        transform: scaleX(1);
+    }
+
+    .landing-nav .landing-nav__register:hover {
+        background: var(--landing-lime);
+        border-color: var(--landing-lime);
+        color: var(--landing-ink);
+        box-shadow: 0 6px 14px -10px rgba(213, 238, 141, 0.7);
+        transform: translateY(-2px);
+    }
+
+    .landing-nav .landing-nav__register:hover > span {
+        transform: translateX(4px);
+    }
+
+    .landing-nav .landing-nav__register:active {
+        transform: translateY(0) scale(0.98);
+    }
+}
+
+/* A brief landing-page exit makes the click feel like a transition rather than
+   an abrupt document swap. Only primary, unmodified auth-link clicks opt in. */
+.landing-body.landing-auth-leaving {
+    animation: landing-auth-leave 220ms ease-in both;
+}
+
+@keyframes landing-auth-leave {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(12px); }
 }
 
 .landing-body .landing-nav a:focus-visible {
@@ -777,6 +857,8 @@
     animation: landing-status-pulse 3.5s ease-in-out infinite;
 }
 
+/* The journey remains readable immediately on reload; only the closing card
+   still opts into reveal motion. */
 .landing-motion .reveal:not(.is-visible) {
     opacity: 0;
     transform: translateY(18px);
@@ -787,9 +869,6 @@
     transform: none;
     transition: opacity 550ms var(--ease), transform 550ms var(--ease);
 }
-
-.landing-motion .step-row:nth-child(2) { transition-delay: 65ms; }
-.landing-motion .step-row:nth-child(3) { transition-delay: 130ms; }
 
 @keyframes landing-enter {
     from { opacity: 0; transform: translateY(16px); }

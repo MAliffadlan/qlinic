@@ -145,6 +145,17 @@
     display: flex;
     flex-direction: column;
     padding: clamp(24px, 4vw, 48px) clamp(24px, 6vw, 88px);
+    animation: auth-panel-enter 280ms var(--ease) both;
+}
+
+@keyframes auth-panel-enter {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes auth-visual-enter {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .auth-panel__top {
@@ -279,6 +290,7 @@
         radial-gradient(680px 520px at 100% 0%, rgba(47, 154, 116, 0.34), transparent 64%),
         linear-gradient(155deg, var(--green-800) 0%, var(--green-950) 88%);
     color: #f7f3e9;
+    animation: auth-visual-enter 280ms var(--ease) both;
 }
 
 .auth-visual::before {
@@ -889,6 +901,13 @@
     height: 18px;
     flex: none;
     margin-top: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .auth-panel,
+    .auth-visual {
+        animation: none;
+    }
 }
 
 /* --------------------------------------------------------------------------
