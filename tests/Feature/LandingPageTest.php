@@ -19,7 +19,6 @@ class LandingPageTest extends TestCase
             'Datang tepat waktu',
             'Ilustrasi antrean',
             'Poli Umum',
-            'Poli Gigi',
         ] as $text) {
             $response->assertSeeText($text);
         }
@@ -36,6 +35,22 @@ class LandingPageTest extends TestCase
         foreach (['id="layar"', 'id="faq"', 'tv-mock', 'hero__plant', 'hero__mini'] as $removed) {
             $response->assertDontSee($removed, false);
         }
+    }
+
+    public function test_journey_omits_the_intro_and_service_shortcuts(): void
+    {
+        $response = $this->get('/');
+        $response->assertOk();
+
+        $content = $response->getContent();
+        $response->assertDontSeeText('Tidak ada unduhan. Tidak ada proses yang berbelit. Cukup browser di HP kamu.');
+        $response->assertDontSeeText('Pilih poli yang kamu tuju');
+        $response->assertDontSeeText('Poli Gigi');
+        $this->assertSame(0, $this->elementCount($content, '//section[@id="cara-kerja"]//a'));
+        $this->assertSame(0, $this->elementCount($content, '//section[@id="cara-kerja"]//*[contains(concat(" ", normalize-space(@class), " "), " journey__intro ")]'));
+        $this->assertSame(0, $this->elementCount($content, '//section[@id="cara-kerja"]//*[contains(concat(" ", normalize-space(@class), " "), " services ")]'));
+        $this->assertSame(0, $this->elementCount($content, '//a[@aria-label="Daftar ke Poli Umum" or @aria-label="Daftar ke Poli Gigi"]'));
+        $this->assertSame(1, $this->elementCount($content, '//section[@id="cara-kerja"]//h3[normalize-space()="Pilih poli"]'));
     }
 
     public function test_editorial_landing_has_a_distinct_hero_and_physical_ticket(): void
@@ -67,6 +82,22 @@ class LandingPageTest extends TestCase
         $this->assertSame(1, $this->elementCount($content, '//header//a[@href="'.route('login').'"]'));
     }
 
+    public function test_header_groups_login_with_registration_without_the_journey_shortcut(): void
+    {
+        $response = $this->get('/');
+        $response->assertOk();
+        $content = $response->getContent();
+
+        $navigation = '//header[contains(concat(" ", normalize-space(@class), " "), " landing-header ")]//nav[@aria-label="Navigasi utama"]';
+        $this->assertSame(1, $this->elementCount($content, $navigation));
+        $this->assertSame(0, $this->elementCount($content, '//header//a[@href="#cara-kerja"]'));
+        $this->assertSame(0, $this->elementCount($content, $navigation.'//a[normalize-space()="Cara kerja"]'));
+        $this->assertSame(1, $this->elementCount($content, $navigation.'//a[@href="'.route('login').'"]'));
+        $this->assertSame(1, $this->elementCount($content, $navigation.'//a[@href="'.route('register').'"]'));
+        $this->assertSame(1, $this->elementCount($content, $navigation.'//a[@href="'.route('login').'"]/following-sibling::a[@href="'.route('register').'"]'));
+        $this->assertSame(1, $this->elementCount($content, '//section[@id="cara-kerja"]'));
+    }
+
     public function test_footer_does_not_repeat_the_queue_display_link(): void
     {
         $response = $this->get('/');
@@ -94,6 +125,20 @@ class LandingPageTest extends TestCase
         $css = file_get_contents(public_path('css/landing.css'));
         $this->assertMatchesRegularExpression('/\.landing-footer__inner\s*\{[^}]*justify-content\s*:\s*center/s', $css);
         $this->assertMatchesRegularExpression('/\.landing-footer p\s*\{[^}]*text-align\s*:\s*center/s', $css);
+    }
+
+    public function test_sticky_header_never_changes_layout_when_scroll_state_changes(): void
+    {
+        $css = file_get_contents(public_path('css/landing.css'));
+        $javascript = file_get_contents(public_path('js/landing.js'));
+        $headerRule = $this->cssRule($css, '.landing-header');
+        $this->assertStringContainsString('top: calc(-1 * var(--landing-header-gap))', $headerRule);
+        $this->assertMatchesRegularExpression('/padding:\s*var\(--landing-header-gap\)\s+\d+px\s+0\s*;/', $headerRule);
+        $this->assertDoesNotMatchRegularExpression('/\.landing-header\.is-scrolled\s*\{[^}]*\b(?:padding\s*:|height\s*:|min-height\s*:|max-height\s*:)/s', $css);
+        $this->assertStringContainsString('headerScrolled', $javascript);
+        $this->assertStringContainsString('var expandAt', $javascript);
+        $this->assertStringContainsString('var collapseAt', $javascript);
+        $this->assertStringContainsString('header.classList.toggle("is-scrolled", headerScrolled)', $javascript);
     }
 
     public function test_landing_is_usable_without_javascript(): void
@@ -135,7 +180,6 @@ class LandingPageTest extends TestCase
         $this->assertStringContainsString('.landing-motion', $css);
         $this->assertStringNotContainsString('.js .reveal', $css);
         $this->assertStringContainsString('landing-header.is-scrolled', $css);
-        $this->assertStringContainsString('border-radius: 999px', $css);
         $this->assertStringContainsString('updateHeader', $javascript);
         $this->assertStringContainsString('window.scrollY', $javascript);
         $this->assertStringContainsString('requestAnimationFrame', $javascript);
@@ -144,6 +188,14 @@ class LandingPageTest extends TestCase
         $this->assertStringContainsString('observer.unobserve', $javascript);
         $this->assertStringContainsString('addEventListener("scroll", scheduleHeaderUpdate, { passive: true })', $javascript);
         $this->assertStringContainsString('if (headerFrame !== null) return;', $javascript);
+    }
+
+    private function cssRule(string $css, string $selector): string
+    {
+        $matched = preg_match('/(?<![\w-])'.preg_quote($selector, '/').'\s*\{([^}]*)\}/', $css, $matches);
+        $this->assertSame(1, $matched, 'Missing CSS rule: '.$selector);
+
+        return $matches[1];
     }
 
     private function elementCount(string $html, string $query): int
