@@ -3,10 +3,22 @@
 
     var header = document.querySelector(".landing-header");
     var headerFrame = null;
+    var headerScrolled = header ? header.classList.contains("is-scrolled") : false;
+    var expandAt = 32;
+    var collapseAt = 12;
 
     function updateHeader() {
         headerFrame = null;
-        if (header) header.classList.toggle("is-scrolled", window.scrollY > 24);
+        if (!header) return;
+
+        // Separate thresholds keep small scroll corrections from restarting
+        // the navbar transition around a single boundary.
+        if (window.scrollY > expandAt) {
+            headerScrolled = true;
+        } else if (window.scrollY <= collapseAt) {
+            headerScrolled = false;
+        }
+        header.classList.toggle("is-scrolled", headerScrolled);
     }
 
     function scheduleHeaderUpdate() {

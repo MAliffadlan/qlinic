@@ -26,7 +26,6 @@
             </a>
 
             <nav class="landing-nav__links" aria-label="Navigasi utama">
-                <a class="landing-nav__anchor" href="#cara-kerja">Cara kerja</a>
                 <a class="landing-nav__login" href="{{ route('login') }}">Masuk</a>
                 <a class="landing-nav__register" href="{{ route('register') }}">Daftar <span aria-hidden="true">↗</span></a>
             </nav>
@@ -86,7 +85,6 @@
                     <p class="eyebrow"><span class="eyebrow__line"></span> Cara kerja</p>
                     <h2 id="steps-title" class="section-title">Tiga langkah, lalu<br>lanjutkan harimu.</h2>
                 </div>
-                <p class="journey__intro">Tidak ada unduhan. Tidak ada proses yang berbelit. Cukup browser di HP kamu.</p>
             </div>
 
             <div class="steps-list">
@@ -111,14 +109,6 @@
                         <p>Cek status antrean dari HP, di mana pun kamu berada.</p>
                     </div>
                 </article>
-            </div>
-
-            <div class="services reveal">
-                <p class="services__label"><span aria-hidden="true"></span> Pilih poli yang kamu tuju</p>
-                <div class="services__items">
-                    <a href="{{ route('register') }}" aria-label="Daftar ke Poli Umum">Poli Umum <span aria-hidden="true">↗</span></a>
-                    <a href="{{ route('register') }}" aria-label="Daftar ke Poli Gigi">Poli Gigi <span aria-hidden="true">↗</span></a>
-                </div>
             </div>
         </section>
 
