@@ -149,6 +149,15 @@ class QueueController extends Controller
         return back()->with('success', 'Berhasil mengambil antrean.');
     }
 
+    public function adminDisplay()
+    {
+        if (Auth::user()->role !== 'admin') {
+            abort(403);
+        }
+
+        return view('admin.display');
+    }
+
     public function liveDisplay()
     {
         return view('patient.display');

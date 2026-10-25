@@ -81,6 +81,15 @@ class AdminQueueAuthorizationTest extends TestCase
         $this->actingAs($patient)->get(route('admin.dashboard'))->assertForbidden();
     }
 
+    public function test_admin_tv_is_only_available_to_administrators(): void
+    {
+        $patient = $this->makeUser('patient', 'patient-tv@example.test', 'Patient TV');
+
+        $this->get(route('admin.display'))
+            ->assertRedirect(route('login'));
+        $this->actingAs($patient)->get(route('admin.display'))->assertForbidden();
+    }
+
     public function test_admin_can_call_next_queue(): void
     {
         $service = $this->makeService();

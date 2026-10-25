@@ -31,6 +31,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [QueueController::class, 'adminDashboard'])->name('admin.dashboard');
+    Route::get('/display', [QueueController::class, 'adminDisplay'])->name('admin.display');
     Route::post('/queue/next', [QueueController::class, 'callNext'])->name('admin.queue.next');
     Route::post('/queue/update/{id}', [QueueController::class, 'updateQueueStatus'])->name('admin.queue.update');
 });
